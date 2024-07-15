@@ -36,6 +36,15 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 	for update := range updates {
 		if update.Message != nil {
+			if update.Message.IsCommand() {
+				_, err = bot.Send(tgbotapi.NewMessage(
+					update.Message.Chat.ID,
+					"👋 Привет! Все, что ты далее пишешь мне отправится в модель YandexART, так что пожалуйста не присылай ничего лишнего 🙌",
+				))
+
+				continue
+			}
+
 			log.Info(
 				update.Message.Text,
 				zap.String("username", update.Message.From.UserName),
@@ -101,7 +110,7 @@ func main() {
 						ctxLog.Error("generation wait timeout")
 						message := tgbotapi.NewMessage(update.Message.Chat.ID, "Таймаут обработки запроса. Попробуйте еще раз 🌸")
 						message.ReplyToMessageID = update.Message.MessageID
-						bot.Send(message)
+						_, _ = bot.Send(message)
 						return
 					}
 				}
