@@ -1,4 +1,4 @@
-package main
+package worker
 
 import (
 	"errors"
@@ -17,7 +17,7 @@ const (
 	retryInterval   = time.Second * 5
 )
 
-func worker(
+func YaART(
 	number int,
 	bot *tgbotapi.BotAPI,
 	yandexART *ya_art.Service,

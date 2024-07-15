@@ -6,6 +6,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
 
+	"github.com/ksusonic/gogpt/cmd/worker"
 	"github.com/ksusonic/gogpt/internal/service/ya_art"
 )
 
@@ -33,7 +34,7 @@ func main() {
 	defer close(generateChan)
 
 	for w := 1; w <= numWorkers; w++ {
-		go worker(w, bot, yandexART, generateChan, log)
+		go worker.YaART(w, bot, yandexART, generateChan, log)
 	}
 
 	u := tgbotapi.NewUpdate(0)
