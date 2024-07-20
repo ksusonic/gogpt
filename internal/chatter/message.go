@@ -24,6 +24,7 @@ func (c *Chatter) HandleMessage(message *tgbotapi.Message) error {
 					message.Chat.ID,
 					"Напиши запрос после команды: /art синий кит",
 				))
+				return nil
 			}
 
 			return c.handleArtRequest(message, prompt)
