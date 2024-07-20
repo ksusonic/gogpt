@@ -37,7 +37,7 @@ func (s *Service) CheckResult(id string, log *zap.Logger) ([]byte, error) {
 	}
 
 	if !parsedResponse.Done || parsedResponse.Response == nil || parsedResponse.Response.Image == "" {
-		return nil, models.NotReadyErr
+		return nil, models.GenerationNotReadyErr
 	}
 
 	decodedImage, err := base64.StdEncoding.DecodeString(parsedResponse.Response.Image)

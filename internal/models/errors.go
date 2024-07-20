@@ -2,6 +2,9 @@ package models
 
 import "errors"
 
+type GenerationError error
+
 var (
-	NotReadyErr = errors.New("not ready")
+	GenerationTimeoutErr  GenerationError = errors.New("generation timeout")
+	GenerationNotReadyErr GenerationError = errors.New("not ready")
 )
