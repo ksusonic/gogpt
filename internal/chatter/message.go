@@ -18,12 +18,15 @@ func (c *Chatter) HandleMessage(message *tgbotapi.Message) error {
 				"👋 Привет! Все, что ты далее пишешь мне отправится в модель YandexART, так что пожалуйста не присылай ничего лишнего 🙌",
 			))
 		case "art":
-			if message.CommandArguments() == "" {
+			prompt := message.CommandArguments()
+			if prompt == "" {
 				_, _ = c.bot.Send(tgbotapi.NewMessage(
 					message.Chat.ID,
-					"Сгенерируй запрос после команды",
+					"Напиши запрос после команды: /art синий кит",
 				))
 			}
+
+			return c.handleArtRequest(message, prompt)
 		default:
 			_, _ = c.bot.Send(tgbotapi.NewMessage(
 				message.Chat.ID,
@@ -34,12 +37,16 @@ func (c *Chatter) HandleMessage(message *tgbotapi.Message) error {
 		return nil
 	}
 
-	if message.Text == "" {
-		return nil
+	if message.Text != "" {
+		return c.handleArtRequest(message, message.Text)
 	}
 
+	return nil
+}
+
+func (c *Chatter) handleArtRequest(message *tgbotapi.Message, prompt string) error {
 	c.log.Info(
-		message.Text,
+		prompt,
 		zap.String("username", message.From.UserName),
 		zap.Int64("user_id", message.From.ID),
 		zap.Int64("chat_id", message.Chat.ID),
@@ -60,7 +67,7 @@ func (c *Chatter) HandleMessage(message *tgbotapi.Message) error {
 
 	c.artGenerateChan <- models.YaARTRequest{
 		UserName:  message.From.UserName,
-		Prompt:    message.Text,
+		Prompt:    prompt,
 		ChatID:    message.Chat.ID,
 		MessageID: message.MessageID,
 	}
